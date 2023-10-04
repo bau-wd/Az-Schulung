@@ -67,7 +67,7 @@ jobs:
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_57A8BB12D940449B9FD44B5D2C0A9A26 }}
           package: .
   deploy-dev:
-    if: github.event.inputs.deploy-env == 'prod'
+    if: github.event.inputs.deploy-env == 'dev'
     runs-on: windows-latest
     needs: build
     environment:
