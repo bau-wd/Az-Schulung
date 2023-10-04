@@ -67,7 +67,7 @@ jobs:
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_57A8BB12D940449B9FD44B5D2C0A9A26 }}
           package: .
   deploy-dev:
-    if: github.event.inputs.deploy-env == 'prod'
+    if: github.event.inputs.deploy-env == 'dev'
     runs-on: windows-latest
     needs: build
     environment:
@@ -86,7 +86,7 @@ jobs:
         with:
           app-name: 'WD-Schulung'
           slot-name: 'dev'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_57A8BB12D940449B9FD44B5D2C0A9A26 }}
+          publish-profile: ${{ secrets.DEV_PUB_PROFILE }}
           package: .
   deploy-stage:
     if: github.event.inputs.deploy-env == 'stage'
@@ -108,5 +108,5 @@ jobs:
         with:
           app-name: 'WD-Schulung'
           slot-name: 'stage'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_57A8BB12D940449B9FD44B5D2C0A9A26 }}
+          publish-profile: ${{ secrets.STAGE_PUB_PROFILE }}
           package: .
