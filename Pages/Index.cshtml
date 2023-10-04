@@ -2,10 +2,9 @@
 @model IndexModel
 @{
     ViewData["Title"] = "Home page";
-    var bgColor = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetSection("Feature1")["backgroudColor"];
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welche Umgebung ist das? Folgende Farbe wurde konfiguriert: @bgColor </h1>
+    <h1 class="display-4">Welche Umgebung ist das? Folgende Farbe wurde konfiguriert: @ViewData["bgColor"] </h1>
     <p>Hallo WD!</p>
 </div>
