@@ -8,6 +8,16 @@ on:
     branches:
       - feature/add-azure-web-app
   workflow_dispatch:
+      inputs:
+      deploy-env:
+        description: 'Select environment'
+        required: true
+        default: 'dev'
+        type: choice
+        options:
+        - dev
+        - stage
+        - prod
 
 jobs:
   build:
@@ -34,7 +44,8 @@ jobs:
           name: .net-app
           path: ${{env.DOTNET_ROOT}}/myapp
 
-  deploy:
+  deploy-prod:
+    if: github.event.inputs.deploy-env == 'prod'
     runs-on: windows-latest
     needs: build
     environment:
@@ -53,5 +64,49 @@ jobs:
         with:
           app-name: 'WD-Schulung'
           slot-name: 'Production'
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_57A8BB12D940449B9FD44B5D2C0A9A26 }}
+          package: .
+  deploy-dev:
+    if: github.event.inputs.deploy-env == 'prod'
+    runs-on: windows-latest
+    needs: build
+    environment:
+      name: 'dev'
+      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+
+    steps:
+      - name: Download artifact from build job
+        uses: actions/download-artifact@v2
+        with:
+          name: .net-app
+
+      - name: Deploy to Azure Web App
+        id: deploy-to-webapp
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: 'WD-Schulung'
+          slot-name: 'dev'
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_57A8BB12D940449B9FD44B5D2C0A9A26 }}
+          package: .
+  deploy-stage:
+    if: github.event.inputs.deploy-env == 'stage'
+    runs-on: windows-latest
+    needs: build
+    environment:
+      name: 'stage'
+      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+
+    steps:
+      - name: Download artifact from build job
+        uses: actions/download-artifact@v2
+        with:
+          name: .net-app
+
+      - name: Deploy to Azure Web App
+        id: deploy-to-webapp
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: 'WD-Schulung'
+          slot-name: 'stage'
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_57A8BB12D940449B9FD44B5D2C0A9A26 }}
           package: .
