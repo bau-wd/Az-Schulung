@@ -16,6 +16,7 @@ namespace Az_Schulung.Pages
 
         public void OnGet()
         {
+            ViewData.Add("welcomeText", _configuration["Feature1:WelcomeText"]);
             ViewData.Add("bgColor", _configuration["Feature1:backgroudColor"]);
         }
     }
